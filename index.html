@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0C1B33">
+<title>Português — מסע הלשון</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,500&family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══ TOKENS ══ */
+:root{
+  --bg:#0C1B33; --s1:rgba(255,255,255,0.06); --s2:rgba(255,255,255,0.11);
+  --s3:rgba(255,255,255,0.17); --b:rgba(255,255,255,0.09); --b2:rgba(255,255,255,0.16);
+  --t1:#EFF4FF; --t2:rgba(239,244,255,0.65); --t3:rgba(239,244,255,0.38);
+  --gold:#E8A020; --gold2:#F5C355; --blue:#4A9FE0; --blue2:#6BB8F5;
+  --green:#34D399; --red:#F87171; --purple:#A78BFA;
+  --nav:68px; --r1:8px; --r2:14px; --r3:20px; --r4:28px;
+  --sh:0 4px 24px rgba(0,0,0,.35); --shL:0 12px 48px rgba(0,0,0,.5);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+/* ══ RESET ══ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;overflow:hidden}
+body{font-family:'Noto Sans Hebrew',sans-serif;color:var(--t1);background:var(--bg);
+  max-width:430px;margin:0 auto;height:100%;overflow:hidden;position:relative}
+button{cursor:pointer;font-family:inherit;border:none;background:none;touch-action:manipulation}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:var(--r1)}
+textarea,input{font-family:inherit;color:var(--t1)}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:1px}
+
+/* ══ SCREEN SYSTEM ══ */
+/* All screens hidden by default */
+.scr{position:absolute;top:0;left:0;right:0;bottom:var(--nav);
+  overflow-y:auto;overflow-x:hidden;display:none;background:var(--bg)}
+/* Visible screen */
+.scr.on{display:block;animation:fadeUp 220ms var(--ease) both}
+/* Full-screen (no nav cutout) */
+.scr.full{bottom:0;z-index:200}
+/* Chat is flex */
+.scr.flex{display:none}
+.scr.flex.on{display:flex;flex-direction:column}
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ NAV ══ */
+#app-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;height:var(--nav);
+  background:rgba(10,22,44,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-around;
+  z-index:100;padding-bottom:env(safe-area-inset-bottom,0px)
+}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--t3);transition:color 150ms var(--ease);
+  padding:8px 14px;min-width:44px;min-height:44px;justify-content:center}
+.nb.on{color:var(--gold)}
+.nb svg{width:22px;height:22px}
+.nb span{font-size:10px;font-weight:500}
+
+/* ══ HERO HEADER ══ */
+.hero{
+  background:linear-gradient(160deg,rgba(74,159,224,.15),rgba(232,160,32,.08));
+  border-bottom:1px solid var(--b);padding:52px 20px 22px;
+  position:relative;overflow:hidden;flex-shrink:0}
+.hero::before{content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath fill='none' stroke='rgba(255,255,255,.04)' d='M30 0L60 30L30 60L0 30Z'/%3E%3Ccircle fill='none' stroke='rgba(232,160,32,.05)' cx='30' cy='30' r='18'/%3E%3C/svg%3E")}
+.hero-inner{position:relative;z-index:1}
+.hero-eye{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);
+  font-weight:600;margin-bottom:5px;opacity:.9}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--t1);line-height:1.1}
+.hero-sub{font-size:12px;color:var(--t2);margin-top:4px}
+
+/* ══ CARDS ══ */
+.card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2)}
+.card-p{background:var(--s1);border:1px solid var(--b);border-radius:var(--r3);padding:16px 18px}
+
+/* ══ ONBOARDING ══ */
+#scr-ob{background:linear-gradient(160deg,#0C1B33,#0D2845 50%,#0C1B33);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 28px}
+.ob-glow{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 25%,rgba(74,159,224,.12),transparent 55%),
+    radial-gradient(ellipse at 75% 70%,rgba(232,160,32,.08),transparent 50%)}
+.ob-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.ob-emblem{width:88px;height:88px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(232,160,32,.2),rgba(74,159,224,.15));
+  border:1px solid rgba(232,160,32,.3);
+  display:flex;align-items:center;justify-content:center;font-size:44px;
+  box-shadow:0 0 40px rgba(232,160,32,.15),var(--shL);
+  margin-bottom:28px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.ob-title{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--t1)}
+.ob-pt{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;
+  color:var(--gold);margin-bottom:14px}
+.ob-sub{font-size:14px;color:var(--t2);line-height:1.7;max-width:270px;margin-bottom:36px}
+.ob-cta{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0C1B33;
+  border-radius:50px;padding:16px 44px;font-size:15px;font-weight:700;
+  box-shadow:0 8px 28px rgba(232,160,32,.35);transition:transform 150ms var(--ease)}
+.ob-cta:active{transform:scale(.96)}
+
+/* ══ WIZARD ══ */
+#scr-qs{padding:60px 22px 36px;display:flex;flex-direction:column}
+.qs-dots{display:flex;gap:6px;margin-bottom:30px}
+.qs-dot{height:4px;border-radius:2px;flex:1;background:var(--s2);transition:background 300ms}
+.qs-dot.done{background:var(--green)}.qs-dot.now{background:var(--gold)}
+.qs-n{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:9px}
+.qs-q{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--t1);margin-bottom:5px}
+.qs-s{font-size:12px;color:var(--t3);margin-bottom:22px}
+.qs-opts{display:flex;flex-direction:column;gap:9px;flex:1}
+.qs-opt{background:var(--s1);border:1.5px solid var(--b);border-radius:var(--r2);
+  padding:14px 16px;text-align:right;display:flex;align-items:center;gap:12px;
+  transition:all 150ms var(--ease)}
+.qs-opt.sel{background:rgba(232,160,32,.1);border-color:rgba(232,160,32,.45)}
+.qs-opt-body{flex:1}
+.qs-opt-t{font-size:14px;font-weight:600;color:var(--t1)}
+.qs-opt-s{font-size:11px;color:var(--t3);margin-top:2px}
+.qs-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--b2);flex-shrink:0;
+  transition:all 150ms;display:flex;align-items:center;justify-content:center}
+.qs-opt.sel .qs-radio{border-color:var(--gold);background:var(--gold)}
+.qs-opt.sel .qs-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#0C1B33}
+.qs-next{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0C1B33;
+  border-radius:50px;padding:15px;font-size:15px;font-weight:700;width:100%;
+  margin-top:22px;display:none;transition:transform 150ms}
+.qs-next.vis{display:block}
+.qs-next:active{transform:scale(.98)}
+
+/* ══ HOME ══ */
+.home-body{padding:18px 18px 20px}
+.hero-stats{display:flex;gap:10px;margin-top:18px}
+.hstat{flex:1;display:flex;align-items:center;gap:9px;
+  background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);padding:12px}
+.hstat-ico{width:34px;height:34px;border-radius:var(--r1);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.hstat-ico.f{background:rgba(248,113,113,.13)}.hstat-ico.f svg{color:var(--red)}
+.hstat-ico.x{background:rgba(232,160,32,.13)}.hstat-ico.x svg{color:var(--gold)}
+.hstat-ico.w{background:rgba(52,211,153,.13)}.hstat-ico.w svg{color:var(--green)}
+.hstat-ico svg{width:16px;height:16px}
+.hstat-n{font-size:20px;font-weight:700;color:var(--t1);line-height:1}
+.hstat-l{font-size:9px;color:var(--t3);margin-top:2px}
+/* Ring */
+.ring-wrap{display:flex;align-items:center;gap:18px;
+  background:var(--s1);border:1px solid var(--b);border-radius:var(--r3);
+  padding:18px;margin-bottom:18px}
+.ring-svg{width:68px;height:68px;flex-shrink:0}
+.ring-lbl{font-size:12px;color:var(--t2);margin-bottom:3px}
+.ring-val{font-size:20px;font-weight:700;color:var(--t1)}
+.ring-sub{font-size:11px;color:var(--t3);margin-top:2px}
+/* Sec */
+.sec-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);
+  font-weight:600;margin-bottom:11px}
+/* Next lesson */
+.nl-card{
+  background:linear-gradient(135deg,rgba(232,160,32,.13),rgba(232,160,32,.05));
+  border:1px solid rgba(232,160,32,.22);border-radius:var(--r3);
+  padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:18px;
+  transition:transform 150ms var(--ease)}
+.nl-card:active{transform:scale(.98)}
+.nl-ico{width:46px;height:46px;border-radius:var(--r2);background:rgba(232,160,32,.18);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nl-ico svg{width:22px;height:22px;color:var(--gold)}
+.nl-body{flex:1}
+.nl-eye{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);
+  font-weight:600;margin-bottom:3px}
+.nl-title{font-size:14px;font-weight:700;color:var(--t1)}
+.nl-sub{font-size:11px;color:var(--t2);margin-top:3px}
+.nl-arr svg{width:18px;height:18px;color:var(--gold)}
+/* Quick grid */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.qa-btn{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);
+  padding:14px 13px;text-align:right;transition:all 150ms var(--ease)}
+.qa-btn:active{transform:scale(.97);background:var(--s2)}
+.qa-ico{width:34px;height:34px;border-radius:var(--r1);margin-bottom:9px;
+  display:flex;align-items:center;justify-content:center}
+.qa-ico svg{width:17px;height:17px}
+.qa-ico.b{background:rgba(74,159,224,.13)}.qa-ico.b svg{color:var(--blue)}
+.qa-ico.p{background:rgba(167,139,250,.13)}.qa-ico.p svg{color:var(--purple)}
+.qa-ico.g{background:rgba(52,211,153,.13)}.qa-ico.g svg{color:var(--green)}
+.qa-ico.r{background:rgba(248,113,113,.13)}.qa-ico.r svg{color:var(--red)}
+.qa-t{font-size:13px;font-weight:600;color:var(--t1)}
+.qa-s{font-size:11px;color:var(--t3);margin-top:2px}
+
+/* ══ LESSONS ══ */
+.lessons-body{padding:18px}
+.week-card{background:linear-gradient(135deg,rgba(74,159,224,.11),rgba(74,159,224,.03));
+  border:1px solid rgba(74,159,224,.18);border-radius:var(--r3);
+  padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.wc-t{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--t1)}
+.wc-s{font-size:11px;color:var(--t3);margin-top:2px}
+.wc-b{background:rgba(74,159,224,.13);border:1px solid rgba(74,159,224,.25);
+  border-radius:20px;padding:4px 13px;font-size:12px;color:var(--blue);font-weight:600}
+.lc{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);
+  padding:13px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px;
+  border-right:3px solid transparent;transition:all 150ms var(--ease)}
+.lc:active{transform:scale(.99)}
+.lc.done{border-right-color:var(--green)}
+.lc.curr{border-right-color:var(--gold);background:rgba(232,160,32,.04)}
+.lc.lock{opacity:.38;pointer-events:none}
+.lc-num{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;font-size:14px}
+.lc-num.d{background:rgba(52,211,153,.13)}.lc-num.d svg{color:var(--green)}
+.lc-num.c{background:rgba(232,160,32,.13)}.lc-num.c svg{color:var(--gold)}
+.lc-num.l{background:var(--s1)}.lc-num.l svg{color:var(--t3)}
+.lc-num svg{width:17px;height:17px}
+.lc-body{flex:1}
+.lc-t{font-size:14px;font-weight:600;color:var(--t1)}
+.lc-s{font-size:11px;color:var(--t3);margin-top:2px}
+.lc-badge{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;flex-shrink:0}
+.lc-badge.done{background:rgba(52,211,153,.11);color:var(--green)}
+.lc-badge.curr{background:rgba(232,160,32,.13);color:var(--gold)}
+.lc-badge.lock{background:var(--s1);color:var(--t3)}
+
+/* ══ DETAIL ══ */
+#scr-detail{z-index:200}
+.det-head{
+  padding:52px 18px 16px;background:rgba(12,27,51,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--b);position:sticky;top:0;z-index:10;flex-shrink:0}
+.det-back{display:flex;align-items:center;gap:5px;color:var(--t2);
+  font-size:13px;padding:6px 0;margin-bottom:10px;transition:color 150ms}
+.det-back svg{width:17px;height:17px}
+.det-back:active{color:var(--t1)}
+.det-pbar{height:3px;background:var(--s2);border-radius:2px;overflow:hidden;margin-bottom:12px}
+.det-pfill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width .5s}
+.det-eye{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:3px}
+.det-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--t1)}
+.det-meta{font-size:11px;color:var(--t3);display:flex;gap:12px;margin-top:4px}
+.det-meta span{display:flex;align-items:center;gap:4px}
+.det-meta svg{width:12px;height:12px}
+.det-body{padding:18px}
+/* Section */
+.ds{margin-bottom:26px}
+.ds-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:600;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ds-title::after{content:'';flex:1;height:1px;background:var(--b)}
+/* Vocab grid */
+.vg{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);overflow:hidden}
+.vg-row{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--b);gap:10px}
+.vg-row:last-child{border-bottom:none}
+.vg-pt{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--t1);flex:1}
+.vg-ph{font-size:9px;color:var(--t3);margin-top:2px}
+.vg-he{font-size:12px;color:var(--t2);flex:1;text-align:left}
+.spk-btn{width:34px;height:34px;border-radius:50%;background:var(--s2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  color:var(--blue2);transition:all 150ms}
+.spk-btn svg{width:15px;height:15px}
+.spk-btn:active{background:rgba(74,159,224,.2);transform:scale(.9)}
+.spk-btn.spkg{animation:spkp .6s ease infinite alternate}
+@keyframes spkp{from{background:rgba(74,159,224,.1)}to{background:rgba(74,159,224,.32)}}
+/* Dialogue bubbles */
+.dial{display:flex;flex-direction:column;gap:11px}
+.db{max-width:88%}.db.a{align-self:flex-start}.db.b{align-self:flex-end}
+.db-spk{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.db.b .db-spk{text-align:right}
+.db-msg{border-radius:18px;padding:10px 14px;position:relative}
+.db.a .db-msg{background:var(--s2);border:1px solid var(--b);border-radius:4px 18px 18px 18px}
+.db.b .db-msg{background:rgba(74,159,224,.14);border:1px solid rgba(74,159,224,.18);border-radius:18px 4px 18px 18px}
+.db-pt{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--t1);margin-bottom:4px}
+.db-he{font-size:11px;color:var(--t3)}
+.db-spkb{position:absolute;bottom:-10px;background:var(--bg);border:1px solid var(--b);
+  border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  color:var(--blue2)}
+.db-spkb svg{width:12px;height:12px}
+.db-spkb:active{background:rgba(74,159,224,.2)}
+.db.a .db-spkb{right:-2px}.db.b .db-spkb{left:-2px}
+/* Grammar & Culture */
+.tip-box{background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.18);
+  border-radius:var(--r2);padding:14px 16px;border-right:3px solid var(--purple)}
+.tip-head{font-size:10px;color:var(--purple);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.tip-body{font-size:13px;color:var(--t2);line-height:1.7}
+.tip-body b{color:var(--t1)}
+.cult-box{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);
+  padding:14px 16px;display:flex;gap:12px}
+.cult-icon{font-size:26px;flex-shrink:0;line-height:1.2}
+.cult-head{font-size:10px;color:var(--gold);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.cult-text{font-size:13px;color:var(--t2);line-height:1.65}
+/* Exercises */
+.ex-item{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);
+  padding:13px 15px;margin-bottom:8px;cursor:pointer;transition:background 150ms}
+.ex-item:active{background:var(--s2)}
+.ex-q{font-size:13px;color:var(--t1);display:flex;gap:8px;align-items:baseline}
+.ex-tag{font-size:9px;background:var(--s2);border:1px solid var(--b);border-radius:20px;
+  padding:2px 8px;color:var(--t3);white-space:nowrap;text-transform:uppercase;letter-spacing:.8px}
+.ex-a{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--green);
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--b);display:none}
+.ex-item.open .ex-a{display:block}
+/* Complete */
+.comp-btn{background:linear-gradient(135deg,var(--green),#2ECC71);color:#0C1B33;
+  border-radius:50px;width:100%;padding:17px;font-size:15px;font-weight:700;
+  box-shadow:0 8px 26px rgba(52,211,153,.25);transition:transform 150ms;
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.comp-btn svg{width:17px;height:17px}
+.comp-btn:active{transform:scale(.98)}
+.comp-btn:disabled{background:var(--s2);color:var(--t3);box-shadow:none}
+.done-banner{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);
+  border-radius:var(--r2);padding:12px 15px;display:flex;align-items:center;gap:9px;
+  font-size:12px;color:var(--green);margin-top:6px}
+.done-banner svg{width:16px;height:16px;flex-shrink:0}
+
+/* ══ PRACTICE ══ */
+.prac-body{padding:18px}
+.ptabs{display:flex;background:var(--s1);border:1px solid var(--b);border-radius:var(--r4);
+  padding:4px;gap:4px;margin-bottom:18px}
+.ptab{flex:1;padding:10px;border-radius:var(--r3);font-size:13px;font-weight:600;
+  color:var(--t3);transition:all 150ms;text-align:center}
+.ptab.on{background:var(--s3);color:var(--t1);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+/* Progress bar */
+.prog-bar{height:4px;background:var(--s2);border-radius:2px;overflow:hidden;margin-bottom:18px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width .4s}
+/* Flashcard */
+.fc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.fc-ctr{font-size:12px;color:var(--t3)}
+.fc-cat{font-size:9px;color:var(--gold);background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.18);
+  border-radius:20px;padding:3px 9px;font-weight:600}
+.fc-wrap{perspective:1400px;height:230px;cursor:pointer;margin-bottom:18px}
+.fc-inner{width:100%;height:100%;transform-style:preserve-3d;position:relative;
+  transition:transform .48s cubic-bezier(.4,0,.2,1)}
+.fc-inner.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:var(--r3);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:26px;box-shadow:var(--shL)}
+.fc-front{background:linear-gradient(145deg,rgba(74,159,224,.16),rgba(12,27,51,.92));
+  border:1px solid rgba(74,159,224,.18)}
+.fc-back{background:var(--s2);border:1px solid var(--b2);transform:rotateY(180deg)}
+.fc-lcat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:11px;opacity:.8;font-weight:600}
+.fc-word{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;font-style:italic;
+  color:var(--t1);text-align:center;margin-bottom:8px;line-height:1.1}
+.fc-hint{font-size:11px;color:var(--t3);margin-top:14px}
+.fc-he{font-size:26px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:7px}
+.fc-ph{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);font-style:italic;text-align:center;margin-bottom:9px}
+.fc-pt-sm{font-size:12px;color:var(--t3);text-align:center;margin-bottom:11px}
+.spk-pill{background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.18);border-radius:50px;
+  padding:8px 18px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gold);
+  font-weight:500;transition:all 150ms;margin-top:7px}
+.spk-pill svg{width:15px;height:15px}
+.spk-pill:active{background:rgba(232,160,32,.2)}
+.spk-pill.spkg{animation:spkp .6s ease infinite alternate}
+.fc-acts{display:flex;gap:11px}
+.fc-btn{flex:1;padding:15px 11px;border-radius:var(--r2);font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:5px;transition:transform 150ms}
+.fc-btn svg{width:17px;height:17px}
+.fc-btn:active{transform:scale(.97)}
+.fc-btn.know{background:rgba(52,211,153,.11);color:var(--green);border:1px solid rgba(52,211,153,.18)}
+.fc-btn.no{background:rgba(248,113,113,.09);color:var(--red);border:1px solid rgba(248,113,113,.14)}
+.fc-done{text-align:center;padding:36px 18px}
+.fc-done-ico{width:68px;height:68px;border-radius:50%;background:rgba(52,211,153,.1);
+  border:1px solid rgba(52,211,153,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.fc-done-ico svg{width:30px;height:30px;color:var(--green)}
+.fc-done-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--t1);margin-bottom:5px}
+.fc-done-score{font-size:13px;color:var(--t2);margin-bottom:22px}
+.restart-btn{background:var(--s2);border:1px solid var(--b2);border-radius:50px;
+  padding:12px 30px;font-size:14px;font-weight:600;color:var(--t1);transition:all 150ms}
+.restart-btn:active{transform:scale(.97)}
+/* Test */
+.test-qn{font-size:11px;color:var(--t3);text-align:center;margin-bottom:7px;letter-spacing:1px}
+.test-question{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;font-style:italic;
+  color:var(--t1);text-align:center;margin:14px 0 5px;line-height:1.2}
+.test-dir{font-size:11px;color:var(--t3);text-align:center;margin-bottom:20px}
+.test-spk-wrap{display:flex;justify-content:center;margin-bottom:14px}
+.test-spk-pill{background:var(--s1);border:1px solid var(--b);border-radius:50px;
+  padding:7px 18px;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t2)}
+.test-spk-pill svg{width:14px;height:14px;color:var(--blue2)}
+.test-opts{display:flex;flex-direction:column;gap:9px}
+.test-opt{background:var(--s1);border:1.5px solid var(--b);border-radius:var(--r2);
+  padding:14px 16px;font-size:14px;color:var(--t1);text-align:right;transition:all 150ms}
+.test-opt:active{background:var(--s2)}
+.test-opt.correct{border-color:var(--green);background:rgba(52,211,153,.07);color:var(--green)}
+.test-opt.wrong{border-color:var(--red);background:rgba(248,113,113,.06);color:var(--red)}
+.result-box{text-align:center;padding:36px 18px}
+.result-stars{display:flex;justify-content:center;gap:3px;margin-bottom:11px}
+.result-stars svg{width:34px;height:34px}
+.result-title{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--t1);margin-bottom:7px}
+.result-score{font-size:14px;color:var(--t2);margin-bottom:18px}
+.result-xp{display:inline-flex;align-items:center;gap:5px;background:rgba(232,160,32,.1);
+  border:1px solid rgba(232,160,32,.2);border-radius:20px;padding:5px 14px;
+  font-size:11px;color:var(--gold);font-weight:600;margin-bottom:18px}
+.result-xp svg{width:13px;height:13px}
+.again-btn{background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;
+  border-radius:50px;padding:13px 34px;font-size:14px;font-weight:700;color:#fff;transition:transform 150ms}
+.again-btn:active{transform:scale(.97)}
+
+/* ══ VOCAB ══ */
+.vocab-body{padding:18px}
+.search-wrap{position:relative;margin-bottom:16px}
+.search-in{width:100%;background:var(--s1);border:1px solid var(--b);border-radius:var(--r4);
+  padding:11px 44px 11px 14px;font-size:14px;color:var(--t1);outline:none;direction:rtl;
+  transition:border-color 150ms}
+.search-in::placeholder{color:var(--t3)}
+.search-in:focus{border-color:rgba(74,159,224,.35)}
+.search-ico{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--t3)}
+.search-ico svg{width:16px;height:16px}
+.vc-filter{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px}
+.vc-filter::-webkit-scrollbar{display:none}
+.vc-chip{background:var(--s1);border:1px solid var(--b);border-radius:20px;padding:5px 13px;
+  font-size:11px;color:var(--t2);font-weight:500;white-space:nowrap;flex-shrink:0;transition:all 150ms}
+.vc-chip.on{background:rgba(232,160,32,.1);border-color:rgba(232,160,32,.28);color:var(--gold)}
+.vc-cat-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);
+  font-weight:600;margin:14px 0 7px;padding-right:2px}
+.vr{background:var(--s1);border:1px solid var(--b);border-radius:var(--r1);
+  padding:11px 13px;margin-bottom:6px;display:flex;align-items:center;gap:11px;transition:background 150ms}
+.vr:active{background:var(--s2)}
+.vr-pt{font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--t1);flex:1}
+.vr-right{display:flex;flex-direction:column;align-items:flex-start}
+.vr-he{font-size:12px;color:var(--t2)}
+.vr-ph{font-size:9px;color:var(--t3);margin-top:1px}
+.locked-note{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);
+  padding:12px 15px;text-align:center;font-size:12px;color:var(--t3);margin-top:10px;
+  display:flex;align-items:center;justify-content:center;gap:7px}
+.locked-note svg{width:13px;height:13px}
+
+/* ══ CHAT ══ */
+.chat-top{padding:52px 18px 13px;background:rgba(10,22,44,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--b);flex-shrink:0;display:flex;align-items:center;gap:12px}
+.chat-av{width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(74,159,224,.25),rgba(74,159,224,.08));
+  border:1px solid rgba(74,159,224,.25);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--blue2)}
+.chat-av svg{width:20px;height:20px}
+.chat-name{font-size:14px;font-weight:600;color:var(--t1)}
+.chat-status{font-size:11px;color:var(--green);display:flex;align-items:center;gap:3px;margin-top:2px}
+.chat-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green)}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px;min-height:0}
+.cm{max-width:85%;border-radius:18px;padding:11px 14px;font-size:13px;line-height:1.65}
+.cm.bot{background:var(--s2);border:1px solid var(--b);color:var(--t1);
+  border-radius:4px 18px 18px 18px;align-self:flex-start}
+.cm.user{background:rgba(74,159,224,.16);border:1px solid rgba(74,159,224,.18);
+  color:var(--t1);border-radius:18px 4px 18px 18px;align-self:flex-end}
+.cm b{color:var(--gold2)}
+.cm-spk{background:none;border:none;opacity:.45;margin-top:5px;display:inline-flex;
+  align-items:center;gap:4px;font-size:11px;color:var(--blue2);transition:opacity 150ms}
+.cm-spk svg{width:13px;height:13px}
+.cm-spk:hover{opacity:.9}
+.typing{display:flex;gap:4px;align-items:center;padding:12px 14px;
+  background:var(--s2);border:1px solid var(--b);border-radius:4px 18px 18px 18px;align-self:flex-start}
+.td{width:7px;height:7px;border-radius:50%;background:var(--t3);animation:td 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.chat-inp{background:rgba(10,22,44,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--b);padding:10px 14px;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));
+  display:flex;align-items:flex-end;gap:8px;flex-shrink:0}
+.chat-ta{flex:1;background:var(--s2);border:1px solid var(--b);border-radius:20px;
+  padding:10px 14px;font-size:14px;color:var(--t1);outline:none;resize:none;
+  max-height:85px;line-height:1.5;direction:rtl;transition:border-color 150ms}
+.chat-ta::placeholder{color:var(--t3)}
+.chat-ta:focus{border-color:rgba(74,159,224,.3)}
+.icon-btn{width:44px;height:44px;border:none;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:transform 150ms}
+.icon-btn svg{width:17px;height:17px}
+.icon-btn:active{transform:scale(.91)}
+.mic-btn{background:var(--s2);border:1px solid var(--b);color:var(--t2)}
+.mic-btn.on{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.28);color:var(--red);
+  animation:micPulse .8s ease infinite alternate}
+@keyframes micPulse{from{box-shadow:0 0 0 0 rgba(248,113,113,.3)}to{box-shadow:0 0 0 7px rgba(248,113,113,0)}}
+.send-btn{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}
+.send-btn:disabled{background:var(--s2);color:var(--t3)}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:calc(var(--nav) + 14px);left:50%;transform:translateX(-50%);
+  background:rgba(10,22,44,.96);backdrop-filter:blur(12px);border:1px solid var(--b2);
+  color:var(--t1);padding:9px 20px;border-radius:50px;font-size:13px;z-index:999;
+  white-space:nowrap;box-shadow:var(--sh);
+  animation:toastIn .22s var(--ease),toastOut .3s var(--ease) 1.8s forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(7px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(-50%) translateY(4px)}}
+
+/* ══ MOBILE TWEAKS ══ */
+@media(max-height:700px){
+  .ob-emblem{width:70px;height:70px;font-size:34px;margin-bottom:20px}
+  .ob-title{font-size:32px}.ob-sub{margin-bottom:24px}
+  .hero{padding:48px 18px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ ONBOARDING ══ -->
+<div id="scr-ob" class="scr full on">
+  <div class="ob-glow"></div>
+  <div class="ob-inner">
+    <div class="ob-emblem">🇵🇹</div>
+    <div class="ob-title">Português</div>
+    <div class="ob-pt">מסע הלשון</div>
+    <div class="ob-sub">האפליקציה שתלמד אותך פורטוגזית אירופאית — מאפס לשיחה, בקצב שלך</div>
+    <button class="ob-cta" onclick="startWiz()">בואו נתחיל ▸</button>
+  </div>
+</div>
+
+<!-- ══ WIZARD ══ -->
+<div id="scr-qs" class="scr full">
+  <div class="qs-dots" id="qs-dots"></div>
+  <div class="qs-n" id="qs-n"></div>
+  <div class="qs-q" id="qs-q"></div>
+  <div class="qs-s" id="qs-s"></div>
+  <div class="qs-opts" id="qs-opts"></div>
+  <button class="qs-next" id="qs-next" onclick="nextQS()">המשך ▸</button>
+</div>
+
+<!-- ══ HOME ══ -->
+<div id="scr-home" class="scr">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eye" id="h-eye">BONJOUR</div>
+      <div class="hero-title">שלום, לומד פורטוגזית!</div>
+      <div class="hero-sub" id="h-sub">—</div>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-ico f"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg></div><div><div class="hstat-n" id="h-str">1</div><div class="hstat-l">רצף</div></div></div>
+      <div class="hstat"><div class="hstat-ico x"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><div><div class="hstat-n" id="h-xp">0</div><div class="hstat-l">XP</div></div></div>
+      <div class="hstat"><div class="hstat-ico w"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg></div><div><div class="hstat-n" id="h-wds">0</div><div class="hstat-l">מילים</div></div></div>
+    </div>
+  </div>
+  <div class="home-body">
+    <div class="ring-wrap">
+      <svg class="ring-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="10"/>
+        <circle id="ring-c" cx="50" cy="50" r="42" fill="none" stroke="url(#rg)" stroke-width="10"
+          stroke-dasharray="263.9" stroke-dashoffset="263.9" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+        <defs><linearGradient id="rg"><stop offset="0%" stop-color="#E8A020"/><stop offset="100%" stop-color="#F5C355"/></linearGradient></defs>
+      </svg>
+      <div><div class="ring-lbl">יעד יומי</div><div class="ring-val" id="ring-val">0 / 50 XP</div><div class="ring-sub" id="ring-sub">התחל לתרגל</div></div>
+    </div>
+    <div class="sec-lbl">שיעור הבא</div>
+    <button class="nl-card" id="nl-card" onclick="goNext()">
+      <div class="nl-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg></div>
+      <div class="nl-body"><div class="nl-eye">השיעור הבא</div><div class="nl-title" id="nl-t">—</div><div class="nl-sub" id="nl-s">—</div></div>
+      <div class="nl-arr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></div>
+    </button>
+    <div class="sec-lbl">תרגול מהיר</div>
+    <div class="qa-grid">
+      <button class="qa-btn" onclick="nav('practice')">
+        <div class="qa-ico b"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6H4c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H4V8h16v8zm-8-7c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg></div>
+        <div class="qa-t">כרטיסיות</div><div class="qa-s">חזור על המילים</div>
+      </button>
+      <button class="qa-btn" onclick="nav('practice','test')">
+        <div class="qa-ico p"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+        <div class="qa-t">מבחן</div><div class="qa-s">10 שאלות</div>
+      </button>
+      <button class="qa-btn" onclick="nav('chat')">
+        <div class="qa-ico g"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div>
+        <div class="qa-t">מורה AI</div><div class="qa-s">שיחה עם Claude</div>
+      </button>
+      <button class="qa-btn" onclick="nav('vocab')">
+        <div class="qa-ico r"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm14-8V6H8.023v2H18zM8 11h10v2H8zm0 5h10v2H8z"/></svg></div>
+        <div class="qa-t">מילון</div><div class="qa-s">כל המילים</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LESSONS ══ -->
+<div id="scr-lessons" class="scr">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eye">LIÇÕES</div>
+    <div class="hero-title">שיעורים</div>
+    <div class="hero-sub">7 שיעורים — שבוע 1 יסודות</div>
+  </div></div>
+  <div class="lessons-body">
+    <div class="week-card">
+      <div><div class="wc-t">שבוע 1 — Fundamentos</div><div class="wc-s">ברכות, מספרים, צבעים, מסעדה, תחבורה</div></div>
+      <div class="wc-b" id="week-b">0/7</div>
+    </div>
+    <div id="lessons-list"></div>
+  </div>
+</div>
+
+<!-- ══ DETAIL ══ -->
+<div id="scr-detail" class="scr full">
+  <div class="det-head">
+    <button class="det-back" onclick="nav('lessons')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      חזרה לשיעורים
+    </button>
+    <div class="det-pbar"><div class="det-pfill" id="dp-fill" style="width:0%"></div></div>
+    <div class="det-eye" id="dp-eye"></div>
+    <div class="det-title" id="dp-title"></div>
+    <div class="det-meta" id="dp-meta"></div>
+  </div>
+  <div class="det-body" id="dp-body"></div>
+</div>
+
+<!-- ══ PRACTICE ══ -->
+<div id="scr-practice" class="scr">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eye">PRÁTICA</div>
+    <div class="hero-title">תרגול</div>
+  </div></div>
+  <div class="prac-body">
+    <div class="ptabs">
+      <button class="ptab on" id="ptab-fc" onclick="switchTab('fc')">🃏 כרטיסיות</button>
+      <button class="ptab" id="ptab-test" onclick="switchTab('test')">📝 מבחן</button>
+    </div>
+    <div id="panel-fc"></div>
+    <div id="panel-test" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ══ VOCAB ══ -->
+<div id="scr-vocab" class="scr">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eye">VOCABULÁRIO</div>
+    <div class="hero-title">אוצר מילים</div>
+    <div class="hero-sub" id="vc-count">0 מילים</div>
+  </div></div>
+  <div class="vocab-body">
+    <div class="search-wrap">
+      <input class="search-in" id="vc-search" placeholder="חפש מילה..." oninput="renderVocab()">
+      <div class="search-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+    </div>
+    <div class="vc-filter" id="vc-filter"></div>
+    <div id="vc-list"></div>
+  </div>
+</div>
+
+<!-- ══ CHAT ══ -->
+<div id="scr-chat" class="scr flex">
+  <div class="chat-top">
+    <div class="chat-av"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg></div>
+    <div><div class="chat-name">Prof. Claude — פורטוגזית</div><div class="chat-status">מחובר ומוכן</div></div>
+  </div>
+  <div class="chat-msgs" id="chat-msgs"></div>
+  <div class="chat-inp">
+    <textarea class="chat-ta" id="chat-ta" placeholder="כתוב בעברית או פורטוגזית..." rows="1"
+      onkeydown="chatKey(event)" oninput="taResize(this)"></textarea>
+    <button class="icon-btn mic-btn" id="mic-btn" onclick="toggleMic()" aria-label="מיקרופון">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    </button>
+    <button class="icon-btn send-btn" id="send-btn" onclick="sendChat()" aria-label="שלח">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav id="app-nav" style="display:none">
+  <button class="nb" id="nb-home" onclick="nav('home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>בית</span></button>
+  <button class="nb" id="nb-lessons" onclick="nav('lessons')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg><span>שיעורים</span></button>
+  <button class="nb" id="nb-practice" onclick="nav('practice')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6H4c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H4V8h16v8zm-8-7c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg><span>תרגול</span></button>
+  <button class="nb" id="nb-vocab" onclick="nav('vocab')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm14-8V6H8.023v2H18zM8 11h10v2H8zm0 5h10v2H8z"/></svg><span>מילים</span></button>
+  <button class="nb" id="nb-chat" onclick="nav('chat')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg><span>מורה</span></button>
+</nav>
+
+<script>
+// ═══ LESSON DATA ═══
+const LS=[
+  {id:1,pt:'Cumprimentos',he:'ברכות והיכרות',xp:100,
+   vocab:[
+    {pt:'Olá',he:'שלום',ph:'אוֹלָה',cat:'ברכות'},
+    {pt:'Bom dia',he:'בוקר טוב',ph:'בּוֹן דִ\'יָה',cat:'ברכות'},
+    {pt:'Boa tarde',he:'צהריים/ערב טוב',ph:'בּוֹאָה טָארְד',cat:'ברכות'},
+    {pt:'Boa noite',he:'לילה טוב',ph:'בּוֹאָה נוֹאִיט',cat:'ברכות'},
+    {pt:'Por favor',he:'בבקשה',ph:'פּוּר פָבוֹר',cat:'נימוסים'},
+    {pt:'Obrigado',he:'תודה (גבר)',ph:'אוֹבְּרִיגָאדוּ',cat:'נימוסים'},
+    {pt:'Obrigada',he:'תודה (אישה)',ph:'אוֹבְּרִיגָאדָה',cat:'נימוסים'},
+    {pt:'Desculpe',he:'סליחה',ph:'דֶשְׁקוּלְפּ',cat:'נימוסים'},
+    {pt:'Sim',he:'כן',ph:'סִין',cat:'בסיסי'},
+    {pt:'Não',he:'לא',ph:'נָאוֹ',cat:'בסיסי'},
+    {pt:'Como se chama?',he:'מה שמך?',ph:'קוֹמוּ סֶה שָׁאמָה',cat:'היכרות'},
+    {pt:'Chamo-me',he:'שמי',ph:'שָׁאמוּ-מֶה',cat:'היכרות'},
+    {pt:'Prazer!',he:'נעים להכיר!',ph:'פְּרָאזֶר',cat:'היכרות'},
+   ],
+   dial:[
+    {s:'A',pt:'Olá! Bom dia!',he:'שלום! בוקר טוב!'},
+    {s:'B',pt:'Bom dia! Como se chama?',he:'בוקר טוב! מה שמך?'},
+    {s:'A',pt:'Chamo-me Dudu. E você?',he:'שמי דודו. ואתה?'},
+    {s:'B',pt:'Chamo-me Ana. Muito prazer!',he:'שמי אנה. נעים מאוד!'},
+    {s:'A',pt:'Prazer! Obrigado, Ana!',he:'נעים! תודה, אנה!'},
+   ],
+   gram:{t:'Obrigado vs. Obrigada',b:'גבר תמיד אומר <b>Obrigado</b> ואישה <b>Obrigada</b> — ללא קשר למי שמולך. זה כלל ברזל בפורטוגזית.'},
+   cult:{i:'🏛️',t:'ליסבון — Boa Tarde!',b:'בפורטוגל ה-"boa tarde" מתחיל אחרי הצהריים ונמשך עד השקיעה. ה-"boa noite" מתחיל עם החשכה. שגיאה בזה נחשבת חוסר נימוס — שמרו על השעה!'},
+   ex:[
+    {q:'תרגם: "בוקר טוב, שמי דודו"',a:'Bom dia, chamo-me Dudu',t:'תרגום'},
+    {q:'מתי אישה תגיד Obrigada?',a:'תמיד — זה תלוי בדובר ולא בנמען',t:'הבנה'},
+    {q:'איך שואלים "מה שמך?"',a:'Como se chama?',t:'שליפה'},
+   ]
+  },
+  {id:2,pt:'Os Números',he:'מספרים 1–20',xp:100,
+   vocab:[
+    {pt:'Um / Uma',he:'1',ph:'אוּם / אוּמָה',cat:'מספרים 1-10'},
+    {pt:'Dois / Duas',he:'2',ph:'דוֹאִיש / דוּאָש',cat:'מספרים 1-10'},
+    {pt:'Três',he:'3',ph:'טְרֵאִיש',cat:'מספרים 1-10'},
+    {pt:'Quatro',he:'4',ph:'קְוָאטְרוּ',cat:'מספרים 1-10'},
+    {pt:'Cinco',he:'5',ph:'סִינְקוּ',cat:'מספרים 1-10'},
+    {pt:'Seis',he:'6',ph:'סֵאִיש',cat:'מספרים 1-10'},
+    {pt:'Sete',he:'7',ph:'סֶטֶה',cat:'מספרים 1-10'},
+    {pt:'Oito',he:'8',ph:'אוֹאִיטוּ',cat:'מספרים 1-10'},
+    {pt:'Nove',he:'9',ph:'נוֹבֶה',cat:'מספרים 1-10'},
+    {pt:'Dez',he:'10',ph:'דֶאִיש',cat:'מספרים 1-10'},
+    {pt:'Onze',he:'11',ph:'אוֹנְזֶה',cat:'מספרים 11-20'},
+    {pt:'Doze',he:'12',ph:'דוֹזֶה',cat:'מספרים 11-20'},
+    {pt:'Treze',he:'13',ph:'טְרֶזֶה',cat:'מספרים 11-20'},
+    {pt:'Catorze',he:'14',ph:'קָטוֹרְזֶה',cat:'מספרים 11-20'},
+    {pt:'Quinze',he:'15',ph:'קִינְזֶה',cat:'מספרים 11-20'},
+    {pt:'Dezasseis',he:'16',ph:'דֶזָסֵאִיש',cat:'מספרים 11-20'},
+    {pt:'Dezassete',he:'17',ph:'דֶזָסֶטֶה',cat:'מספרים 11-20'},
+    {pt:'Dezoito',he:'18',ph:'דֶזוֹאִיטוּ',cat:'מספרים 11-20'},
+    {pt:'Dezanove',he:'19',ph:'דֶזָנוֹבֶה',cat:'מספרים 11-20'},
+    {pt:'Vinte',he:'20',ph:'וִינְטֶה',cat:'מספרים 11-20'},
+   ],
+   dial:[
+    {s:'A',pt:'Quantos anos tem?',he:'בן/בת כמה אתה?'},
+    {s:'B',pt:'Tenho trinta e cinco anos.',he:'אני בן 35.'},
+    {s:'A',pt:'Qual é o seu número?',he:'מה המספר שלך?'},
+    {s:'B',pt:'É o nove, um, dois...',he:'זה תשע, אחד, שניים...'},
+   ],
+   gram:{t:'Tenho X anos',b:'בפורטוגזית לא אומרים "אני בן X" אלא <b>Tenho X anos</b> (יש לי X שנים). המספרים 1-2 מתאימים למין: <b>um</b>/<b>uma</b>, <b>dois</b>/<b>duas</b>.'},
+   cult:{i:'🍷',t:'מחירים בפורטוגל',b:'יין טוב בפורטוגל עולה 3-4 יורו! כשתראה "dois euros e cinquenta" — זה 2.50€, מחיר קפה נורמלי. פורטוגל היא אחת המדינות הזולות באירופה המערבית.'},
+   ex:[
+    {q:'ספור 1-5 בפורטוגזית',a:'Um, dois, três, quatro, cinco',t:'שליפה'},
+    {q:'איך אומרים "אני בן 20"?',a:'Tenho vinte anos',t:'תרגום'},
+    {q:'מה ההבדל בין dois ל-duas?',a:'dois = זכר, duas = נקבה',t:'הבנה'},
+   ]
+  },
+  {id:3,pt:'Cores e Casa',he:'צבעים וחפצי בית',xp:100,
+   vocab:[
+    {pt:'Vermelho/a',he:'אדום/ה',ph:'וֶרְמֶלְיוּ',cat:'צבעים'},
+    {pt:'Azul',he:'כחול',ph:'אָזוּל',cat:'צבעים'},
+    {pt:'Verde',he:'ירוק',ph:'וֶרְדֶה',cat:'צבעים'},
+    {pt:'Amarelo/a',he:'צהוב/ה',ph:'אָמָרֶלוּ',cat:'צבעים'},
+    {pt:'Branco/a',he:'לבן/ה',ph:'בְּרָנְקוּ',cat:'צבעים'},
+    {pt:'Preto/a',he:'שחור/ה',ph:'פְּרֶטוּ',cat:'צבעים'},
+    {pt:'Laranja',he:'כתום',ph:'לָרָנְזָה',cat:'צבעים'},
+    {pt:'Rosa',he:'ורוד',ph:'רוֹזָה',cat:'צבעים'},
+    {pt:'Casa',he:'בית',ph:'קָאזָה',cat:'חפצי בית'},
+    {pt:'Mesa',he:'שולחן',ph:'מֶזָה',cat:'חפצי בית'},
+    {pt:'Cadeira',he:'כיסא',ph:'קָדֵאִירָה',cat:'חפצי בית'},
+    {pt:'Janela',he:'חלון',ph:'זָ\'אנֶלָה',cat:'חפצי בית'},
+    {pt:'Porta',he:'דלת',ph:'פּוֹרְטָה',cat:'חפצי בית'},
+    {pt:'Livro',he:'ספר',ph:'לִיבְרוּ',cat:'חפצי בית'},
+   ],
+   dial:[
+    {s:'A',pt:'De que cor é a sua casa?',he:'איזה צבע הבית שלך?'},
+    {s:'B',pt:'A minha casa é branca com janelas azuis.',he:'הבית שלי לבן עם חלונות כחולים.'},
+    {s:'A',pt:'Bonito! Como os azulejos!',he:'יפה! כמו האזולחוס!'},
+    {s:'B',pt:'Obrigado! Amo Portugal.',he:'תודה! אני אוהב פורטוגל.'},
+   ],
+   gram:{t:'תואר שם — אחרי השם',b:'בפורטוגזית התואר מגיע <b>אחרי</b> השם: <b>casa branca</b> (בית לבן). התואר מתאים למין: livro verde (ספר ירוק) — porta verde (דלת ירוקה).'},
+   cult:{i:'🔵',t:'האזולחוס',b:'ה-azulejos (אָזוּלֵ\'חוֹש) — האריחים הכחולים המפורסמים — לב התרבות הפורטוגזית. מקשטים כנסיות, תחנות רכבת, בתים. הצבע הכחול "azul" הגיע מהמילה הערבית "اللازورد".'},
+   ex:[
+    {q:'איך אומרים "דלת אדומה"?',a:'Porta vermelha (נקבה!)',t:'תרגום'},
+    {q:'תאר את הדגל הפורטוגזי',a:'O drapeau é verde e vermelho',t:'יצירה'},
+    {q:'מה זה janela?',a:'חלון',t:'שליפה'},
+   ]
+  },
+  {id:4,pt:'Revisão',he:'חזרה ומבחן',xp:150,
+   vocab:[],
+   dial:[
+    {s:'A',pt:'Bom dia! Como se chama?',he:'בוקר טוב! מה שמך?'},
+    {s:'B',pt:'Chamo-me João. Tenho vinte anos.',he:'שמי ז\'ואאו. אני בן 20.'},
+    {s:'A',pt:'De que cor é a sua casa?',he:'איזה צבע הבית שלך?'},
+    {s:'B',pt:'É branca e azul. Obrigado!',he:'לבן וכחול. תודה!'},
+   ],
+   gram:{t:'סיכום שבוע ראשון',b:'ברכות: <b>Bom dia / Boa tarde / Boa noite</b><br>מספרים: <b>Um… Vinte</b><br>צבעים: <b>Vermelho, Azul, Verde…</b><br>משפט היכרות: <b>Chamo-me X. Tenho Y anos.</b>'},
+   cult:{i:'🇵🇹',t:'Parabéns!',b:'כל הכבוד! עברת שבוע ראשון של למידה. בפורטוגזית אומרים "Parabéns!" (פַּרָבֵאִינְש) — לכל ישגה ולאירוח. אתה כבר יכול להציג עצמך, לספור, ולתאר צבעים.'},
+   ex:[
+    {q:'הצג עצמך בפורטוגזית (שם + גיל)',a:'Olá! Chamo-me X. Tenho Y anos. Prazer!',t:'יצירה'},
+    {q:'ספור: 5, 10, 15, 20',a:'Cinco, dez, quinze, vinte',t:'שליפה'},
+    {q:'מה "De que cor é"?',a:'איזה צבע זה?',t:'הבנה'},
+   ]
+  },
+  {id:5,pt:'No Restaurante',he:'במסעדה',xp:120,
+   vocab:[
+    {pt:'Menu / Ementa',he:'תפריט',ph:'מֶנוּ',cat:'מסעדה'},
+    {pt:'Conta',he:'חשבון',ph:'קוֹנְטָה',cat:'מסעדה'},
+    {pt:'Água',he:'מים',ph:'אָגְוָה',cat:'שתייה'},
+    {pt:'Vinho tinto',he:'יין אדום',ph:'וִינְיוּ טִינְטוּ',cat:'שתייה'},
+    {pt:'Vinho branco',he:'יין לבן',ph:'וִינְיוּ בְּרָנְקוּ',cat:'שתייה'},
+    {pt:'Cerveja',he:'בירה',ph:'סֶרְבֵאִיזָ\'ה',cat:'שתייה'},
+    {pt:'Pão',he:'לחם',ph:'פָּאוֹ',cat:'אוכל'},
+    {pt:'Carne',he:'בשר',ph:'קָרְנֶה',cat:'אוכל'},
+    {pt:'Peixe',he:'דג',ph:'פֵּאִישֶׁה',cat:'אוכל'},
+    {pt:'Salada',he:'סלט',ph:'סָלָדָה',cat:'אוכל'},
+    {pt:'Quero...',he:'אני רוצה...',ph:'קֶרוּ',cat:'ביטויים'},
+    {pt:'A conta, por favor!',he:'החשבון, בבקשה!',ph:'אָה קוֹנְטָה',cat:'ביטויים'},
+    {pt:'Está delicioso!',he:'זה טעים!',ph:'אֶשְׁטָה דֶלִיסְיוֹזוּ',cat:'ביטויים'},
+   ],
+   dial:[
+    {s:'Empregado',pt:'Boa tarde! Uma mesa para quantos?',he:'צהריים טובים! שולחן לכמה?'},
+    {s:'Cliente',pt:'Para dois, por favor.',he:'לשניים, בבקשה.'},
+    {s:'Empregado',pt:'O que deseja beber?',he:'מה תרצה לשתות?'},
+    {s:'Cliente',pt:'Água e um vinho tinto, obrigado.',he:'מים ויין אדום, תודה.'},
+    {s:'Cliente',pt:'A conta, por favor!',he:'החשבון, בבקשה!'},
+   ],
+   gram:{t:'Quero vs. Queria',b:'<b>Quero</b> = אני רוצה (ישיר). <b>Queria</b> = הייתי רוצה (מנומס). בפורטוגל מומלץ להשתמש ב-Queria בהזמנות — זה נשמע יותר אדיב.'},
+   cult:{i:'🐟',t:'פטישקוס ובקלהאו',b:'בפורטוגל מגישים לפני הארוחה "petiscos" — זיתים, גבינה, לחם. הם עולים כסף! אם לא רצית: "Não, obrigado." הדג המפורסם "bacalhau" (בקלה מלוח) — יש 365 מתכונים, אחד לכל יום!'},
+   ex:[
+    {q:'איך מזמינים מים במנומס?',a:'Queria água, por favor',t:'תרגום'},
+    {q:'מה ההבדל בין Quero ל-Queria?',a:'Quero = ישיר, Queria = מנומס',t:'הבנה'},
+    {q:'איך מבקשים חשבון?',a:'A conta, por favor!',t:'שליפה'},
+   ]
+  },
+  {id:6,pt:'Transportes',he:'תחבורה וכיוונים',xp:120,
+   vocab:[
+    {pt:'Metro',he:'רכבת תחתית',ph:'מֶטְרוּ',cat:'תחבורה'},
+    {pt:'Autocarro',he:'אוטובוס',ph:'אוֹטוּקָרוּ',cat:'תחבורה'},
+    {pt:'Táxi',he:'מונית',ph:'טָקְסִי',cat:'תחבורה'},
+    {pt:'Comboio',he:'רכבת',ph:'קוֹמְבּוֹאִיוּ',cat:'תחבורה'},
+    {pt:'Eléctrico',he:'חשמלית',ph:'אֶלֶקְטְרִיקוּ',cat:'תחבורה'},
+    {pt:'Aeroporto',he:'שדה תעופה',ph:'אֵרוּפּוֹרְטוּ',cat:'תחבורה'},
+    {pt:'Esquerda',he:'שמאל',ph:'אֶשְׁקֶרְדָה',cat:'כיוונים'},
+    {pt:'Direita',he:'ימין',ph:'דִירֵאִיטָה',cat:'כיוונים'},
+    {pt:'Em frente',he:'ישר קדימה',ph:'אֶין פְּרֵנְטֶה',cat:'כיוונים'},
+    {pt:'Onde fica?',he:'איפה נמצא?',ph:'אוֹנְדֶה פִּיקָה',cat:'ביטויים'},
+    {pt:'Quanto custa?',he:'כמה עולה?',ph:'קְוָאנְטוּ קוּשְׁטָה',cat:'ביטויים'},
+    {pt:'Com licença!',he:'סליחה! (בדרך)',ph:'קוֹן לִיסֵנְסָה',cat:'ביטויים'},
+   ],
+   dial:[
+    {s:'Turista',pt:'Com licença! Onde fica o metro?',he:'סליחה! איפה המטרו?'},
+    {s:'Local',pt:'Siga em frente, depois à esquerda.',he:'ישר קדימה, אחר כך שמאלה.'},
+    {s:'Turista',pt:'Quanto custa o bilhete?',he:'כמה עולה הכרטיס?'},
+    {s:'Local',pt:'Dois euros. O eléctrico 28 também é bonito!',he:'שני יורו. החשמלית 28 גם יפה!'},
+   ],
+   gram:{t:'Onde é vs. Onde fica',b:'שניהם = "איפה?". <b>Onde fica?</b> — על מיקום מדויק (עדיף). <b>Onde é?</b> — כללי יותר. שניהם מקובלים לתיירים.'},
+   cult:{i:'🚃',t:'אלקטריקו 28',b:'החשמלית 28 בליסבון עוברת דרך השכונות ההיסטוריות של אלפמה. נסיעה כ-3 יורו = שעת סיור מודרך! אבל שמרו על הארנק — יש כיסנים פעילים.'},
+   ex:[
+    {q:'איך שואלים "איפה שדה התעופה"?',a:'Onde fica o aeroporto?',t:'תרגום'},
+    {q:'מה ההבדל בין autocarro לcomboio?',a:'autocarro = אוטובוס, comboio = רכבת',t:'הבנה'},
+    {q:'תרגם: "ישר קדימה, אחר כך ימינה"',a:'Em frente, depois à direita',t:'תרגום'},
+   ]
+  },
+  {id:7,pt:'Conversa Livre',he:'שיחה חופשית',xp:200,
+   vocab:[
+    {pt:'Adoro',he:'אני אוהב מאוד',ph:'אָדוֹרוּ',cat:'רגשות'},
+    {pt:'Gosto de',he:'אני אוהב',ph:'גוֹשְׁטוּ דֶה',cat:'רגשות'},
+    {pt:'Não gosto',he:'לא אוהב',ph:'נָאוֹ גוֹשְׁטוּ',cat:'רגשות'},
+    {pt:'Não percebo',he:'לא מבין',ph:'נָאוֹ פֶּרְסֶבּוּ',cat:'שיחה'},
+    {pt:'Pode repetir?',he:'אפשר לחזור?',ph:'פּוֹד רֶפֶּטִיר',cat:'שיחה'},
+    {pt:'Fala mais devagar',he:'דבר לאט יותר',ph:'פָּאלָה מָאִיש דֶוָגָר',cat:'שיחה'},
+    {pt:'Hoje',he:'היום',ph:'אוֹזֶ\'ה',cat:'זמן'},
+    {pt:'Amanhã',he:'מחר',ph:'אָמָנְיָה',cat:'זמן'},
+    {pt:'Sou de Israel',he:'אני מישראל',ph:'סוֹאוּ דֶ אִיזְרָאֵל',cat:'היכרות'},
+   ],
+   dial:[
+    {s:'A',pt:'De onde é?',he:'מאיפה אתה?'},
+    {s:'B',pt:'Sou de Israel. E você?',he:'אני מישראל. ואתה?'},
+    {s:'A',pt:'Sou de Lisboa. O que acha de Portugal?',he:'אני מליסבון. מה אתה חושב על פורטוגל?'},
+    {s:'B',pt:'Adoro! A comida é deliciosa!',he:'אוהב מאוד! האוכל טעים!'},
+    {s:'A',pt:'Parabéns pelo seu Português!',he:'כל הכבוד על הפורטוגזית!'},
+   ],
+   gram:{t:'ביטויי הישרדות',b:'לא הבנת? — <b>Não percebo</b>. רוצה שיחזרו? — <b>Pode repetir?</b> רוצה שידברו לאט? — <b>Fala mais devagar, por favor</b>. אל תתבייש!'},
+   cult:{i:'🎉',t:'Parabéns! שבוע ראשון הושלם',b:'עברת 7 שיעורים! אתה יכול: להציג עצמך, לספור, לתאר צבעים, להזמין אוכל, לנווט, ולנהל שיחה בסיסית. שבוע 2 מחכה!'},
+   ex:[
+    {q:'איך אומרים "אני לא מבין"?',a:'Não percebo',t:'שליפה'},
+    {q:'הצג עצמך במלואה',a:'Olá! Chamo-me X. Sou de Israel. Tenho Y anos. Prazer!',t:'יצירה'},
+    {q:'מה "Fala mais devagar"?',a:'דבר לאט יותר',t:'הבנה'},
+   ]
+  }
+];
+
+// ═══ STATE ═══
+const SK='pt_v5';
+let S={profile:null,xp:0,streak:1,done:[],wordStats:{},chatHist:[],chatReady:false};
+function save(){try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}}
+function load(){try{const r=localStorage.getItem(SK);if(r)Object.assign(S,JSON.parse(r))}catch(e){}}
+
+function addXP(n){S.xp+=n;S.streak=Math.max(S.streak,1);save();toast('+'+n+' XP');}
+
+// ═══ NAVIGATION ═══
+let pTab='fc';
+
+function nav(id,sub){
+  // Hide overlay screens first
+  document.getElementById('scr-ob').classList.remove('on');
+  document.getElementById('scr-qs').classList.remove('on');
+  // Hide all regular screens
+  document.querySelectorAll('.scr').forEach(s=>{
+    if(s.id!=='scr-ob'&&s.id!=='scr-qs') s.classList.remove('on');
+  });
+  // Nav active state
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  // Show target
+  const t=document.getElementById('scr-'+id);
+  if(t) t.classList.add('on');
+  const nb=document.getElementById('nb-'+id);
+  if(nb) nb.classList.add('on');
+  // Nav visibility — hide for full-screen screens
+  document.getElementById('app-nav').style.display=['detail'].includes(id)?'none':'flex';
+  // Init
+  if(id==='home') renderHome();
+  if(id==='lessons') renderLessons();
+  if(id==='practice') initPractice(sub||pTab);
+  if(id==='vocab') renderVocab();
+  if(id==='chat') initChat();
+}
+
+// ═══ ONBOARDING ═══
+const QS=[
+  {n:'שאלה 1 מתוך 5',q:'מה רמת הפורטוגזית שלך?',s:'דירוג עצמי',
+   opts:[{t:'מתחיל מוחלט',s:'אפס — מאפס',v:'zero'},{t:'מתחיל A1',s:'יודע כמה מילים',v:'a1'},{t:'בינוני B1-B2',s:'שיחה בסיסית',v:'b1'},{t:'מתקדם C1+',s:'שליטה טובה',v:'adv'}]},
+  {n:'שאלה 2 מתוך 5',q:'מה המטרה שלך?',s:'נעצב תוכנית בהתאם',
+   opts:[{t:'שיחה יומיומית',s:'תקשורת עם מקומיים',v:'daily'},{t:'עסקים',s:'פגישות, כתיבה',v:'biz'},{t:'טיולים',s:'הישרדות בפורטוגל',v:'travel'},{t:'תרבות',s:'שירים, ספרות',v:'culture'}]},
+  {n:'שאלה 3 מתוך 5',q:'כמה זמן ביום?',s:'נתאים קצב',
+   opts:[{t:'10–15 דקות',s:'קצר ויעיל',v:'10'},{t:'20–30 דקות',s:'מומלץ',v:'30'},{t:'שעה+',s:'אינטנסיבי',v:'60'}]},
+  {n:'שאלה 4 מתוך 5',q:'סגנון לימוד?',s:'כל שיטה עובדת',
+   opts:[{t:'מובנה ושיטתי',s:'דקדוק + תרגילים',v:'str'},{t:'שיחה חופשית',s:'immersion',v:'cnv'},{t:'שילוב מאוזן',s:'מומלץ למתחילים',v:'mix'}]},
+  {n:'שאלה 5 מתוך 5',q:'איזו פורטוגזית?',s:'שני ניבים שונים',
+   opts:[{t:'🇵🇹 פורטוגלית',s:'ליסבון, pt-PT',v:'pt-PT'},{t:'🇧🇷 ברזילאית',s:'ריו, pt-BR',v:'pt-BR'}]},
+];
+let qi=0,qa={};
+
+function startWiz(){
+  qi=0;qa={};
+  document.getElementById('scr-ob').classList.remove('on');
+  document.getElementById('scr-qs').classList.add('on');
+  renderQS();
+}
+
+function renderQS(){
+  const q=QS[qi];
+  document.getElementById('qs-dots').innerHTML=QS.map((_,i)=>`<div class="qs-dot ${i<qi?'done':i===qi?'now':''}"></div>`).join('');
+  document.getElementById('qs-n').textContent=q.n;
+  document.getElementById('qs-q').textContent=q.q;
+  document.getElementById('qs-s').textContent=q.s;
+  document.getElementById('qs-opts').innerHTML=q.opts.map(o=>`
+    <button class="qs-opt" onclick="selQ(this,'${o.v}')">
+      <div class="qs-opt-body"><div class="qs-opt-t">${o.t}</div><div class="qs-opt-s">${o.s}</div></div>
+      <div class="qs-radio"></div>
+    </button>`).join('');
+  document.getElementById('qs-next').classList.remove('vis');
+}
+
+function selQ(el,v){
+  document.querySelectorAll('.qs-opt').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');qa[qi]=v;
+  document.getElementById('qs-next').classList.add('vis');
+}
+
+function nextQS(){
+  if(!qa[qi]) return;
+  if(qi<QS.length-1){qi++;renderQS();}else finishQS();
+}
+
+function finishQS(){
+  const lv={zero:'מתחיל מוחלט',a1:'A1',b1:'B1',adv:'מתקדם'};
+  const gl={daily:'שיחה יומיומית',biz:'עסקים',travel:'טיולים',culture:'תרבות'};
+  S.profile={level:qa[0],goal:qa[1],time:qa[2],style:qa[3],dialect:qa[4],
+    levelL:lv[qa[0]]||'מתחיל',goalL:gl[qa[1]]||'שיחה'};
+  S.done=[];save();
+  document.getElementById('app-nav').style.display='flex';
+  nav('home');
+}
+
+// ═══ HOME ═══
+function renderHome(){
+  if(!S.profile) return;
+  const p=S.profile;
+  const h=new Date().getHours();
+  const gr=h<12?'בוקר טוב':h<18?'צהריים טובים':'ערב טוב';
+  document.getElementById('h-eye').textContent=(p.dialect==='pt-BR'?'🇧🇷':'🇵🇹')+' '+gr.toUpperCase();
+  document.getElementById('h-sub').textContent=p.levelL+' · '+p.goalL+' · '+p.time+' דק\'/יום';
+  document.getElementById('h-str').textContent=S.streak;
+  document.getElementById('h-xp').textContent=S.xp;
+  document.getElementById('h-wds').textContent=getVocab().length;
+  // Ring
+  const pct=Math.min(S.xp,50)/50;
+  document.getElementById('ring-c').style.strokeDashoffset=263.9*(1-pct);
+  document.getElementById('ring-val').textContent=Math.min(S.xp,50)+' / 50 XP';
+  document.getElementById('ring-sub').textContent=pct>=1?'יעד יומי הושג! 🎉':'המשך לתרגל';
+  // Next lesson
+  const next=LS.find(l=>!S.done.includes(l.id));
+  if(next){
+    document.getElementById('nl-t').textContent='יום '+next.id+' — '+next.he;
+    document.getElementById('nl-s').textContent=next.pt+' · '+next.xp+' XP';
+  } else {
+    document.getElementById('nl-card').innerHTML='<div style="text-align:center;width:100%;font-size:14px;color:var(--green);padding:4px">✅ סיימת את כל 7 השיעורים! 🏆</div>';
+  }
+}
+
+function goNext(){
+  const next=LS.find(l=>!S.done.includes(l.id));
+  if(next) openLesson(next.id);
+}
+
+function getVocab(){
+  const all=[];
+  LS.forEach(l=>{
+    if(l.id===1||S.done.includes(l.id)||S.done.includes(l.id-1)){
+      l.vocab.forEach(v=>{if(!all.find(x=>x.pt===v.pt))all.push(v);});
+    }
+  });
+  return all.length?all:LS[0].vocab;
+}
+
+// ═══ LESSONS ═══
+function renderLessons(){
+  document.getElementById('week-b').textContent=S.done.length+'/7';
+  document.getElementById('lessons-list').innerHTML=LS.map(l=>{
+    const done=S.done.includes(l.id);
+    const curr=!done&&(l.id===1||S.done.includes(l.id-1));
+    const lock=!done&&!curr;
+    const nc=done?'d':curr?'c':'l';
+    const icon=done
+      ?'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+      :curr
+      ?'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+      :'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
+    const badge=done?'<span class="lc-badge done">✅ הושלם</span>':curr?'<span class="lc-badge curr">▶ עכשיו</span>':'<span class="lc-badge lock">🔒</span>';
+    const cls=done?'done':curr?'curr':'lock';
+    const click=!lock?`onclick="openLesson(${l.id})"`:' ';
+    return `<div class="lc ${cls}" ${click}>
+      <div class="lc-num ${nc}">${icon}</div>
+      <div class="lc-body"><div class="lc-t">יום ${l.id} — ${l.he}</div><div class="lc-s">${l.pt} · ${l.xp} XP${l.vocab.length?' · '+l.vocab.length+' מילים':''}</div></div>
+      ${badge}
+    </div>`;
+  }).join('');
+}
+
+// ═══ LESSON DETAIL ═══
+function openLesson(id){
+  const l=LS.find(x=>x.id===id);if(!l)return;
+  const done=S.done.includes(id);
+  document.getElementById('dp-eye').textContent=l.pt.toUpperCase();
+  document.getElementById('dp-title').textContent=l.he;
+  document.getElementById('dp-meta').innerHTML=`
+    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>30 דקות</span>
+    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>${l.xp} XP</span>
+    ${l.vocab.length?`<span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>${l.vocab.length} מילים</span>`:''}`;
+  document.getElementById('dp-fill').style.width=(done?100:0)+'%';
+
+  let h='';
+  if(l.vocab.length){
+    h+=`<div class="ds"><div class="ds-title">אוצר מילים</div><div class="vg">
+      ${l.vocab.map(v=>`<div class="vg-row">
+        <div style="flex:1"><div class="vg-pt">${v.pt}</div><div class="vg-ph">${v.ph}</div></div>
+        <div class="vg-he">${v.he}</div>
+        <button class="spk-btn" onclick="spk('${E(v.pt)}',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
+      </div>`).join('')}
+    </div></div>`;
+  }
+  h+=`<div class="ds"><div class="ds-title">דיאלוג</div><div class="dial">
+    ${l.dial.map((d,i)=>`<div class="db ${i%2?'b':'a'}">
+      <div class="db-spk">${d.s}</div>
+      <div class="db-msg">
+        <div class="db-pt">${d.pt}</div><div class="db-he">${d.he}</div>
+        <button class="db-spkb" onclick="spk('${E(d.pt)}',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
+      </div>
+    </div>`).join('')}
+  </div></div>`;
+  h+=`<div class="ds"><div class="ds-title">דקדוק</div>
+    <div class="tip-box"><div class="tip-head">${l.gram.t}</div><div class="tip-body">${l.gram.b}</div></div>
+  </div>`;
+  h+=`<div class="ds"><div class="ds-title">תרבות</div>
+    <div class="cult-box"><div class="cult-icon">${l.cult.i}</div>
+    <div><div class="cult-head">${l.cult.t}</div><div class="cult-text">${l.cult.b}</div></div></div>
+  </div>`;
+  h+=`<div class="ds"><div class="ds-title">תרגילים — לחץ לחשיפת תשובה</div>
+    ${l.ex.map((e,i)=>`<div class="ex-item" onclick="this.classList.toggle('open')">
+      <div class="ex-q"><span class="ex-tag">${e.t}</span>${i+1}. ${e.q}</div>
+      <div class="ex-a">${e.a}</div>
+    </div>`).join('')}
+  </div>`;
+  if(done){
+    h+=`<div class="done-banner"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>שיעור זה הושלם — כל הכבוד!</div>`;
+  } else {
+    h+=`<button class="comp-btn" id="comp-btn" onclick="completeLesson(${id})">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      סיימתי את השיעור — +${l.xp} XP
+    </button>`;
+  }
+  document.getElementById('dp-body').innerHTML=h;
+  // Scroll to top
+  document.getElementById('scr-detail').scrollTop=0;
+  nav('detail');
+}
+
+function completeLesson(id){
+  if(S.done.includes(id)) return;
+  S.done.push(id);
+  addXP(LS.find(l=>l.id===id)?.xp||100);
+  document.getElementById('dp-fill').style.width='100%';
+  const b=document.getElementById('comp-btn');
+  if(b){b.disabled=true;b.textContent='✅ הושלם!';}
+  setTimeout(()=>nav('lessons'),1200);
+}
+
+// ═══ PRACTICE ═══
+function initPractice(tab){
+  pTab=tab||'fc';
+  document.getElementById('ptab-fc').classList.toggle('on',pTab==='fc');
+  document.getElementById('ptab-test').classList.toggle('on',pTab==='test');
+  document.getElementById('panel-fc').style.display=pTab==='fc'?'block':'none';
+  document.getElementById('panel-test').style.display=pTab==='test'?'block':'none';
+  if(pTab==='fc') initFC();
+  else initTest();
+}
+function switchTab(t){initPractice(t);}
+
+// Flashcards
+let fDeck=[],fIdx=0,fKnew=0,fFlip=false;
+
+function initFC(){
+  const all=getVocab();
+  if(!all.length){document.getElementById('panel-fc').innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">למד שיעור ראשון!</div>';return;}
+  fDeck=[...all].sort(()=>Math.random()-.5);
+  fIdx=0;fKnew=0;fFlip=false;
+  renderFC();
+}
+
+function renderFC(){
+  if(fIdx>=fDeck.length){showFCDone();return;}
+  const c=fDeck[fIdx];
+  const pct=(fIdx/fDeck.length)*100;
+  document.getElementById('panel-fc').innerHTML=`
+    <div class="fc-meta"><span class="fc-ctr">${fIdx+1}/${fDeck.length}</span><span class="fc-cat">${c.cat}</span></div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="fc-wrap" onclick="flipFC()">
+      <div class="fc-inner" id="fc-inner">
+        <div class="fc-face fc-front">
+          <div class="fc-lcat">${c.cat.toUpperCase()}</div>
+          <div class="fc-word">${c.pt}</div>
+          <button class="spk-pill" onclick="event.stopPropagation();spk('${E(c.pt)}',this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>שמע
+          </button>
+          <div class="fc-hint">הקש להפוך ▸</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-he">${c.he}</div>
+          <div class="fc-ph">${c.ph}</div>
+          <div class="fc-pt-sm">${c.pt}</div>
+          <button class="spk-pill" onclick="event.stopPropagation();spk('${E(c.pt)}',this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>שמע שוב
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="fc-acts" style="display:none" class="fc-acts">
+      <button class="fc-btn no" onclick="nextFC(false)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>לא ידעתי</button>
+      <button class="fc-btn know" onclick="nextFC(true)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>ידעתי!</button>
+    </div>`;
+  fFlip=false;
+}
+
+function flipFC(){
+  if(fFlip) return;
+  fFlip=true;
+  document.getElementById('fc-inner').classList.add('flipped');
+  document.getElementById('fc-acts').style.display='flex';
+  setTimeout(()=>spk(fDeck[fIdx]?.pt),370);
+}
+
+function nextFC(knew){
+  if(knew)fKnew++;
+  fIdx++;
+  S.xp=Math.min(S.xp+2,9999);save();
+  if(fIdx>=fDeck.length)showFCDone();else renderFC();
+}
+
+function showFCDone(){
+  const pct=fDeck.length?Math.round(fKnew/fDeck.length*100):0;
+  const msg=pct>=85?'מצוין!':pct>=65?'כמעט מושלם!':'המשך לתרגל!';
+  addXP(Math.round(fDeck.length*.5));
+  document.getElementById('panel-fc').innerHTML=`
+    <div class="fc-done">
+      <div class="fc-done-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2z"/></svg></div>
+      <div class="fc-done-title">${msg}</div>
+      <div class="fc-done-score">ידעת ${fKnew} מתוך ${fDeck.length} — ${pct}%</div>
+      <button class="restart-btn" onclick="initFC()">🔄 שוב מהתחלה</button>
+    </div>`;
+}
+
+// Test
+let tQs=[],tIdx=0,tScore=0,tAnswered=false;
+
+function initTest(){
+  const all=getVocab();
+  if(all.length<4){document.getElementById('panel-test').innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">צריך 4+ מילים. למד שיעור ראשון!</div>';return;}
+  tQs=[];
+  [...all].sort(()=>Math.random()-.5).slice(0,10).forEach(w=>{
+    const dir=Math.random()>.5?'p2h':'h2p';
+    const wr=all.filter(x=>x.pt!==w.pt).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=dir==='p2h'?[w.he,...wr.map(x=>x.he)].sort(()=>Math.random()-.5):[w.pt,...wr.map(x=>x.pt)].sort(()=>Math.random()-.5);
+    tQs.push({w,dir,opts,ans:dir==='p2h'?w.he:w.pt});
+  });
+  tIdx=0;tScore=0;tAnswered=false;renderTest();
+}
+
+function renderTest(){
+  if(tIdx>=tQs.length){showResult();return;}
+  const q=tQs[tIdx];
+  const shown=q.dir==='p2h'?q.w.pt:q.w.he;
+  const dirL=q.dir==='p2h'?'פורטוגזית ← עברית':'עברית ← פורטוגזית';
+  const pct=(tIdx/tQs.length)*100;
+  document.getElementById('panel-test').innerHTML=`
+    <div class="test-qn">שאלה ${tIdx+1} / ${tQs.length}</div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="test-question">${shown}</div>
+    <div class="test-dir">${dirL}</div>
+    ${q.dir==='p2h'?`<div class="test-spk-wrap"><button class="test-spk-pill" onclick="spk('${E(q.w.pt)}',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>שמע</button></div>`:''}
+    <div class="test-opts">${q.opts.map(o=>`<button class="test-opt" onclick="ansTest(this,'${E(o)}','${E(q.ans)}')">${o}</button>`).join('')}</div>`;
+}
+
+function ansTest(el,chosen,correct){
+  if(tAnswered)return;
+  tAnswered=true;
+  document.querySelectorAll('.test-opt').forEach(b=>b.style.pointerEvents='none');
+  if(chosen===correct){el.classList.add('correct');tScore++;}
+  else{
+    el.classList.add('wrong');
+    document.querySelectorAll('.test-opt').forEach(b=>{if(b.textContent===correct)b.classList.add('correct');});
+  }
+  setTimeout(()=>{tIdx++;tAnswered=false;renderTest();},850);
+}
+
+function showResult(){
+  const pct=Math.round(tScore/tQs.length*100);
+  const xp=pct>=80?50:pct>=60?30:15;
+  addXP(xp);
+  const stars=pct>=90?3:pct>=70?2:1;
+  const msg=pct>=90?'מדהים!':pct>=70?'כמעט מושלם!':pct>=50?'לא רע!':'תחזור על החומר';
+  const sv=`<svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
+  const se=`<svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--s3)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
+  document.getElementById('panel-test').innerHTML=`
+    <div class="result-box">
+      <div class="result-stars">${sv.repeat(stars)}${se.repeat(3-stars)}</div>
+      <div class="result-title">${msg}</div>
+      <div class="result-score">${tScore} מתוך ${tQs.length} — ${pct}%</div>
+      <div class="result-xp" style="margin:0 auto 18px"><svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>+${xp} XP</div>
+      <button class="again-btn" onclick="initTest()">מבחן חדש</button>
+    </div>`;
+}
+
+// ═══ VOCAB ═══
+let vcF='all';
+function renderVocab(){
+  const all=getVocab();
+  document.getElementById('vc-count').textContent=all.length+' מילים פתוחות';
+  const cats=['all',...new Set(all.map(v=>v.cat))];
+  document.getElementById('vc-filter').innerHTML=cats.map(c=>`<button class="vc-chip ${vcF===c?'on':''}" onclick="vcF='${c}';renderVocab()">${c==='all'?'הכל':c}</button>`).join('');
+  const q=(document.getElementById('vc-search')?.value||'').toLowerCase();
+  const fl=all.filter(v=>(vcF==='all'||v.cat===vcF)&&(!q||v.pt.toLowerCase().includes(q)||v.he.includes(q)));
+  const grp={};fl.forEach(v=>{if(!grp[v.cat])grp[v.cat]=[];grp[v.cat].push(v);});
+  let h=Object.entries(grp).map(([c,ws])=>`
+    <div class="vc-cat-lbl">${c}</div>
+    ${ws.map(w=>`<div class="vr">
+      <div style="flex:1"><div class="vr-pt">${w.pt}</div></div>
+      <div class="vr-right"><div class="vr-he">${w.he}</div><div class="vr-ph">${w.ph}</div></div>
+      <button class="spk-btn" onclick="spk('${E(w.pt)}',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
+    </div>`).join('')}`).join('');
+  const locked=LS.filter(l=>!S.done.includes(l.id)&&l.id>1&&!S.done.includes(l.id-1)&&l.id!==1).reduce((n,l)=>n+l.vocab.length,0);
+  if(locked) h+=`<div class="locked-note"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>עוד ${locked} מילים יפתחו עם התקדמות</div>`;
+  if(!fl.length) h='<div style="text-align:center;padding:40px;color:var(--t3)">לא נמצאו מילים</div>';
+  document.getElementById('vc-list').innerHTML=h;
+}
+
+// ═══ TTS ═══
+let synth=window.speechSynthesis,activeBtn=null;
+function spk(txt,btn){
+  synth.cancel();
+  if(activeBtn){activeBtn.classList.remove('spkg');}
+  if(activeBtn===btn){activeBtn=null;return;}
+  if(!txt?.trim())return;
+  const u=new SpeechSynthesisUtterance(txt);
+  u.lang=S.profile?.dialect||'pt-PT';u.rate=.8;u.pitch=1;
+  const vs=synth.getVoices();
+  const v=vs.find(x=>x.lang===u.lang)||vs.find(x=>x.lang.startsWith('pt-PT'))||vs.find(x=>x.lang.startsWith('pt'));
+  if(v)u.voice=v;
+  if(btn){activeBtn=btn;btn.classList.add('spkg');u.onend=u.onerror=()=>{btn.classList.remove('spkg');activeBtn=null;}}
+  synth.speak(u);
+}
+if(synth.onvoiceschanged!==undefined)synth.onvoiceschanged=()=>synth.getVoices();
+
+// ═══ CHAT ═══
+function buildSys(){
+  const p=S.profile||{};
+  return `אתה Prof. Claude — מורה פורטוגזית AI פרטי למשתמשים ישראלים.
+פרופיל: רמה ${p.levelL||'מתחיל'} · מטרה ${p.goalL||'שיחה'} · ניב ${p.dialect||'pt-PT'}
+מילים שנלמדו: ${getVocab().slice(0,30).map(v=>v.pt+'='+v.he).join(', ')}
+כללים: ענה בעברית עם דוגמאות פורטוגזית ב**bold**. הוסף תעתיק להגייה. תקן שגיאות בעדינות. תגובות קצרות ומובייל-ידידותיות. היה מעודד.`;
+}
+
+function initChat(){
+  if(!S.chatReady){
+    S.chatReady=true;
+    if(S.chatHist.length){S.chatHist.forEach(m=>addMsg(m.role==='assistant'?'bot':'user',m.content,false));}
+    else setTimeout(()=>addMsg('bot','**Olá!** ברוך הבא! 🇵🇹\n\nאני **Prof. Claude**, המורה שלך לפורטוגזית.\n\nמה תרצה לתרגל?\n• **ברכות** — Cumprimentos\n• **מספרים** — Números\n• **שיחה חופשית**\n• שאל כל שאלה על פורטוגזית 💪',false),400);
+  }
+  setTimeout(()=>{const m=document.getElementById('chat-msgs');if(m)m.scrollTop=m.scrollHeight;},100);
+}
+
+function addMsg(role,text,sv=true){
+  const c=document.getElementById('chat-msgs');if(!c)return;
+  const d=document.createElement('div');
+  d.className='cm '+role;
+  d.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+  if(role==='bot'){
+    const b=document.createElement('button');b.className='cm-spk';
+    b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg> האזן';
+    b.onclick=()=>spk(text.replace(/\*\*/g,'').slice(0,200),b);
+    d.appendChild(b);
+  }
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+  if(sv){
+    S.chatHist.push({role:role==='bot'?'assistant':'user',content:text});
+    if(S.chatHist.length>50)S.chatHist=S.chatHist.slice(-50);
+    save();
+  }
+}
+
+function showTyping(){
+  const c=document.getElementById('chat-msgs');
+  const d=document.createElement('div');d.id='typ';d.className='typing';
+  d.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
+
+async function sendChat(){
+  const ta=document.getElementById('chat-ta');
+  const txt=ta.value.trim();if(!txt)return;
+  ta.value='';ta.style.height='';
+  addMsg('user',txt);
+  document.getElementById('send-btn').disabled=true;showTyping();
+  try{
+    const msgs=S.chatHist.slice(-20).map(m=>({role:m.role==='bot'?'assistant':m.role,content:m.content}));
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:buildSys(),messages:msgs})
+    });
+    const d=await r.json();
+    hideTyping();
+    if(d.content?.[0]?.text)addMsg('bot',d.content[0].text);
+    else addMsg('bot','⚠️ שגיאת חיבור — נסה שוב');
+  }catch(e){hideTyping();addMsg('bot','⚠️ בעיית חיבור. בדוק אינטרנט.');}
+  document.getElementById('send-btn').disabled=false;
+}
+
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+function taResize(el){el.style.height='';el.style.height=Math.min(el.scrollHeight,85)+'px';}
+
+// Speech
+let recog=null,mic=false;
+function setupMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('mic-btn').style.display='none';return;}
+  recog=new SR();recog.lang=S.profile?.dialect||'pt-PT';
+  recog.onresult=e=>{document.getElementById('chat-ta').value=e.results[0][0].transcript;stopMic();setTimeout(sendChat,300);};
+  recog.onerror=recog.onend=()=>stopMic();
+}
+function toggleMic(){if(mic){stopMic();return;}if(!recog)return;mic=true;document.getElementById('mic-btn').classList.add('on');recog.start();toast('🎤 מאזין...');}
+function stopMic(){mic=false;document.getElementById('mic-btn').classList.remove('on');try{recog?.stop();}catch(e){}}
+
+// Toast
+function toast(m){
+  document.querySelectorAll('.toast').forEach(e=>e.remove());
+  const d=document.createElement('div');d.className='toast';d.textContent=m;
+  document.body.appendChild(d);setTimeout(()=>d.remove(),2300);
+}
+
+// Escape for inline onclick
+function E(s){return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
+// ═══ INIT ═══
+window.addEventListener('load',()=>{
+  load();
+  if(S.profile){
+    document.getElementById('scr-ob').classList.remove('on');
+    document.getElementById('app-nav').style.display='flex';
+    nav('home');
+  }
+  setupMic();
+  setInterval(save,20000);
+});
+window.addEventListener('beforeunload',save);
+</script>
+</body>
+</html>
