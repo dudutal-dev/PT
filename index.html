@@ -820,26 +820,40 @@ function addMsg(role,text,sv){
 function showTyp(){var c=document.getElementById('chat-msgs');var d=document.createElement('div');d.id='typ';d.className='typing';d.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function hideTyp(){var e=document.getElementById('typ');if(e)e.remove();}
 // ─── API KEY ─────────────────────────────────────────────────
-function getApiKey(){return localStorage.getItem('pt_apikey')||'';}
+// API key stored in memory + localStorage
+var _apiKey = '';
+function getApiKey(){
+  if(_apiKey) return _apiKey;
+  try{ _apiKey = localStorage.getItem('pt_apikey')||''; }catch(e){}
+  return _apiKey;
+}
+function setApiKey(k){
+  _apiKey = k;
+  try{ localStorage.setItem('pt_apikey', k); }catch(e){}
+}
 function openApiModal(){
   var k=getApiKey();
   var curr=document.getElementById('api-curr');
-  if(k){curr.style.display='flex';curr.textContent='✅ מפתח שמור: sk-ant-...'+k.slice(-6);curr.className='api-status ok';}
-  else{curr.style.display='flex';curr.textContent='❌ אין מפתח API';curr.className='api-status missing';}
-  document.getElementById('api-key-in').value='';
+  if(curr){
+    curr.style.display='flex';
+    if(k){curr.textContent='✅ מפתח קיים: ...'+k.slice(-8);curr.className='api-status ok';}
+    else{curr.textContent='❌ אין מפתח API';curr.className='api-status missing';}
+  }
+  var inp=document.getElementById('api-key-in');
+  if(inp){inp.value=k||'';}
   document.getElementById('api-modal').style.display='flex';
+  setTimeout(function(){if(inp)inp.focus();},100);
 }
 function closeApiModal(){document.getElementById('api-modal').style.display='none';}
 function saveApiKey(){
-  var k=document.getElementById('api-key-in').value.trim();
+  var inp=document.getElementById('api-key-in');
+  var k=(inp?inp.value:'').trim();
   if(!k){toast('הכנס מפתח API');return;}
-  if(!k.startsWith('sk-')){toast('מפתח לא תקין — חייב להתחיל ב-sk-');return;}
-  localStorage.setItem('pt_apikey',k);
-  closeApiModal();
-  toast('✅ מפתח נשמר!');
-  // Retry if pending
-  var ta=document.getElementById('chat-ta');
-  if(ta&&ta.value.trim()){sendChat();}
+  setApiKey(k);
+  // Show confirmation
+  var curr=document.getElementById('api-curr');
+  if(curr){curr.style.display='flex';curr.textContent='✅ נשמר: ...'+k.slice(-8);curr.className='api-status ok';}
+  setTimeout(function(){closeApiModal();toast('✅ מפתח API נשמר');},600);
 }
 
 async function sendChat(){
@@ -865,7 +879,7 @@ async function sendChat(){
     else if(data.error){
       var em=data.error.message||'שגיאה';
       if(em.indexOf('auth')>=0||data.error.type==='authentication_error'){
-        localStorage.removeItem('pt_apikey');
+        _apiKey='';try{localStorage.removeItem('pt_apikey');}catch(e){}
         addMsg('bot','❌ מפתח API לא תקין. לחץ כאן לעדכון.');
         openApiModal();
       } else {addMsg('bot','שגיאה: '+em);}
