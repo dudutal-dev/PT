@@ -268,6 +268,26 @@ textarea,input{font-family:inherit;color:#EFF4FF}
 .sndbtn{background:linear-gradient(135deg,#4A9FE0,#6BB8F5);color:#fff}
 .sndbtn:disabled{background:rgba(255,255,255,0.09);color:rgba(239,244,255,0.35)}
 
+
+/* API KEY MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#0D1F3C;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:28px 24px;width:100%;max-width:380px}
+.modal-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.modal-sub{font-size:13px;color:rgba(239,244,255,0.55);margin-bottom:20px;line-height:1.6}
+.modal-sub a{color:#4A9FE0;text-decoration:none}
+.api-input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;font-size:14px;color:#EFF4FF;outline:none;direction:ltr;margin-bottom:14px}
+.api-input:focus{border-color:rgba(74,159,224,0.5)}
+.api-input::placeholder{color:rgba(239,244,255,0.3)}
+.api-row{display:flex;gap:10px}
+.api-btn{flex:1;padding:13px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:transform 0.15s}
+.api-btn:active{transform:scale(0.97)}
+.api-save{background:linear-gradient(135deg,#E8A020,#F5C355);color:#0C1B33}
+.api-skip{background:rgba(255,255,255,0.08);color:rgba(239,244,255,0.55)}
+.api-note{font-size:11px;color:rgba(239,244,255,0.3);margin-top:12px;text-align:center;line-height:1.5}
+.api-status{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:12px;padding:10px 14px;border-radius:10px}
+.api-status.ok{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:#34D399}
+.api-status.missing{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:#F87171}
+
 .toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%);background:rgba(10,20,42,0.97);border:1px solid rgba(255,255,255,0.14);color:#EFF4FF;padding:9px 20px;border-radius:50px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;animation:tin 0.22s ease,tout 0.3s ease 1.8s forwards}
 @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(7px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes tout{to{opacity:0}}
@@ -377,7 +397,8 @@ textarea,input{font-family:inherit;color:#EFF4FF}
 
 <!-- CHAT -->
 <div id="p-chat" class="pg flex">
-  <div class="chat-top"><div class="chat-av"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg></div><div><div class="chat-name">Prof. Claude — פורטוגזית</div><div class="chat-st">מחובר ומוכן</div></div></div>
+  <div class="chat-top"><div class="chat-av"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg></div><div><div><div class="chat-name">Prof. Claude — פורטוגזית</div><div class="chat-st" id="chat-st-lbl">בדיקת API...</div></div></div>  <button onclick="openApiModal()" style="margin-right:auto;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 12px;font-size:11px;color:rgba(239,244,255,0.6);cursor:pointer">🔑 API</button>
+</div>
   <div class="msgs" id="chat-msgs"></div>
   <div class="chat-inp">
     <textarea class="chat-ta" id="chat-ta" placeholder="כתוב בעברית או פורטוגזית..." rows="1" onkeydown="chatKey(event)" oninput="taResize(this)"></textarea>
@@ -783,6 +804,9 @@ function initChat(){
     else{setTimeout(function(){addMsg('bot','**Olá!** ברוך הבא! 🇵🇹\n\nאני **Prof. Claude**, המורה שלך.\n\nמה תרצה לתרגל?\n• **ברכות** — Cumprimentos\n• **מספרים** — Numeros\n• **שיחה חופשית**\n• שאל כל שאלה 💪',false);},400);}
   }
   setTimeout(function(){var m=document.getElementById('chat-msgs');if(m)m.scrollTop=m.scrollHeight;},100);
+  // Update API status label
+  var sl=document.getElementById('chat-st-lbl');
+  if(sl){if(getApiKey())sl.textContent='מחובר ומוכן';else sl.textContent='נדרש API key — לחץ 🔑';}
 }
 function addMsg(role,text,sv){
   if(sv===undefined)sv=true;
@@ -795,17 +819,62 @@ function addMsg(role,text,sv){
 }
 function showTyp(){var c=document.getElementById('chat-msgs');var d=document.createElement('div');d.id='typ';d.className='typing';d.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function hideTyp(){var e=document.getElementById('typ');if(e)e.remove();}
+// ─── API KEY ─────────────────────────────────────────────────
+function getApiKey(){return localStorage.getItem('pt_apikey')||'';}
+function openApiModal(){
+  var k=getApiKey();
+  var curr=document.getElementById('api-curr');
+  if(k){curr.style.display='flex';curr.textContent='✅ מפתח שמור: sk-ant-...'+k.slice(-6);curr.className='api-status ok';}
+  else{curr.style.display='flex';curr.textContent='❌ אין מפתח API';curr.className='api-status missing';}
+  document.getElementById('api-key-in').value='';
+  document.getElementById('api-modal').style.display='flex';
+}
+function closeApiModal(){document.getElementById('api-modal').style.display='none';}
+function saveApiKey(){
+  var k=document.getElementById('api-key-in').value.trim();
+  if(!k){toast('הכנס מפתח API');return;}
+  if(!k.startsWith('sk-')){toast('מפתח לא תקין — חייב להתחיל ב-sk-');return;}
+  localStorage.setItem('pt_apikey',k);
+  closeApiModal();
+  toast('✅ מפתח נשמר!');
+  // Retry if pending
+  var ta=document.getElementById('chat-ta');
+  if(ta&&ta.value.trim()){sendChat();}
+}
+
 async function sendChat(){
   var ta=document.getElementById('chat-ta');var txt=ta.value.trim();if(!txt)return;
+  var apiKey=getApiKey();
+  if(!apiKey){openApiModal();return;}
   ta.value='';ta.style.height='';addMsg('user',txt);
   document.getElementById('sndbtn').disabled=true;showTyp();
   try{
     var msgs=S.chatHist.slice(-20).map(function(m){return{role:m.role==='bot'?'assistant':m.role,content:m.content};});
-    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:buildSys(),messages:msgs})});
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:buildSys(),messages:msgs})
+    });
     var data=await r.json();hideTyp();
-    if(data.content&&data.content[0]&&data.content[0].text)addMsg('bot',data.content[0].text);
-    else addMsg('bot','שגיאת חיבור — נסה שוב');
-  }catch(e){hideTyp();addMsg('bot','בעיית חיבור. בדוק אינטרנט.');}
+    if(data.content&&data.content[0]&&data.content[0].text){addMsg('bot',data.content[0].text);}
+    else if(data.error){
+      var em=data.error.message||'שגיאה';
+      if(em.indexOf('auth')>=0||data.error.type==='authentication_error'){
+        localStorage.removeItem('pt_apikey');
+        addMsg('bot','❌ מפתח API לא תקין. לחץ כאן לעדכון.');
+        openApiModal();
+      } else {addMsg('bot','שגיאה: '+em);}
+    } else {addMsg('bot','שגיאה לא ידועה');}
+  }catch(e){
+    hideTyp();
+    addMsg('bot','⚠️ שגיאת חיבור. בדוק אינטרנט או API key.');
+    console.error(e);
+  }
   document.getElementById('sndbtn').disabled=false;
 }
 function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
@@ -833,5 +902,24 @@ window.addEventListener('load',function(){
 });
 window.addEventListener('beforeunload',save);
 </script>
+
+<!-- API KEY MODAL -->
+<div id="api-modal" class="modal-bg" style="display:none">
+  <div class="modal">
+    <div class="modal-title">🔑 מפתח API</div>
+    <div class="modal-sub">
+      כדי לשוחח עם המורה AI צריך מפתח Anthropic API.<br>
+      קבל מפתח בחינם ב: <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>
+    </div>
+    <div id="api-curr" class="api-status missing" style="display:none"></div>
+    <input class="api-input" id="api-key-in" type="password" placeholder="sk-ant-api03-...">
+    <div class="api-row">
+      <button class="api-btn api-skip" onclick="closeApiModal()">ביטול</button>
+      <button class="api-btn api-save" onclick="saveApiKey()">שמור ↵</button>
+    </div>
+    <div class="api-note">המפתח נשמר רק במכשיר שלך ולא נשלח לשום מקום</div>
+  </div>
+</div>
+
 </body>
 </html>
